@@ -1,9 +1,9 @@
 import random
-def Graph_gen(link): # Forms a node-node connectivity
+def Graph_gen(link): 
 matrix given link-states.
-g = [[0 for i in range(5)] for i in range(5)] # Form a 2D Graph of Connected
+g = [[0 for i in range(5)] for i in range(5)] 
 Nodes
-g[0][1]=g[1][0]=link[0] # Below define a mapping from
+g[0][1]=g[1][0]=link[0] 
 link-state to node connectivity
 g[0][2]=g[2][0]=link[1]
 g[0][3]=g[3][0]=link[2]
@@ -15,37 +15,37 @@ g[2][3]=g[3][2]=link[7]
 g[2][4]=g[4][2]=link[8]
 g[3][4]=g[4][3]=link[9]
 return(g)
-def getP(link, p): # Function to calculate the
+def getP(link, p): 
 reliability of a given graph
-graph=Graph_gen(link) # First form a node-node
+graph=Graph_gen(link) 
 connectivity graph
-for row in graph: # For each node in the graph
+for row in graph: 
 Check if it is connected
-if(sum(row)==0): # If node is not connected
-return 0 # Reliability of graph is 0
+if(sum(row)==0): 
+return 
 return((p**sum(link))*((1-p)**(10-sum(link))))
-# Else return the reliability of
+
 the graph
 
-def calcReliability(exh_links, p): # Calculate reliability of
+def calcReliability(exh_links, p): 
 exhaustive enumerated graph
-reliability=0 # Initialize reliability to 0
-for link in exh_links: # For each possible combination
-reliability += getP(link,p) # compute the reliability of that
+reliability=0 
+for link in exh_links:
+reliability += getP(link,p) 
 graph as sum of products
-return reliability # Return the computed reliability
-def getConnectedGraphs(exh_links, p): # Function to get list of
+return reliability 
+def getConnectedGraphs(exh_links, p): 
 connected graphs from exhaustive list
 global connected_graphs
-for i in range(1024): # For all the exhaustive list of
+for i in range(1024):
 graphs
-if(getP(exh_links[i],p)!=0): # Check if is connected
-connected_graphs.append(i) # If it is connected append it to
+if(getP(exh_links[i],p)!=0):
+connected_graphs.append(i) 
 list of connected_graphs
-def flip(rows_to_flip): # Flips the On/Off state of a
+def flip(rows_to_flip): 
 given graph
 global exhaustive_links
-for row in rows_to_flip: # For each graph in the selected
+for row in rows_to_flip: 
 graphs
 exhaustive_links[row]=[(exhaustive_links[row][i]+1)%2
 Flips the links in graph
@@ -53,52 +53,51 @@ connected_graphs =[]
 comb=0
 exhaustive_links=[[0 for i in range(10)] for i in range(1024)]# Initialize the
 exhaustive graph list
-for a in range(2):# Link a
-for b in range(2):# Link b
-for c in range(2):# Link c
-for d in range(2):# Link d
-for e in range(2):# Link e
-for f in range(2):# Link f
-for g in range(2):# Link g
-for h in range(2):# Link h
-for i in range(2):# Link i
-for j in range(2): # Link j
+for a in range(2):
+for b in range(2):
+for c in range(2):
+for d in range(2):
+for e in range(2):
+for f in range(2):
+for g in range(2):
+for h in range(2):
+for i in range(2):
+for j in range(2): 
 exhaustive_links[comb]=[a,b,c,d,e,f,g,h,i,j]
-for i in range(10)] #
-# Set the links of the graph
+for i in range(10)] 
 comb+=1
-reliability = [0 for i in range(26)] # Initialize reliability
-getConnectedGraphs(exhaustive_links, 0.5) # Form a list of connected graph
+reliability = [0 for i in range(26)] 
+getConnectedGraphs(exhaustive_links, 0.5) 
 print("P\tReliability")
-for p in range(0,26): # For each value of p in
+for p in range(0,26): 
 increments of 0.025
 reliability[p] =
 calcReliability(exhaustive_links,p*0.04)
-print(str(p*0.04)+" "+str(reliability[p])) # Print the value of
+print(str(p*0.04)+" "+str(reliability[p]))
 reliability for a given p
-new_reliability=[0 for i in range(31)] # Initialize the reliability
-no_of_monte_carlo_simulation = 100; # Number of repeated runs to
+new_reliability=[0 for i in range(31)] 
+no_of_monte_carlo_simulation = 100; 
 average out the random variation
 print("K\tNew Reliability")
 
-for k in range(31): # The number of graphs to be
+for k in range(31): 
 flipped
-for i in range(no_of_monte_carlo_simulation): # Number of monte-carlo
+for i in range(no_of_monte_carlo_simulation):
 simulation
 rows_to_be_flipped=random.sample(connected_graphs,k)
-# Select random k
+
 graphs
-flip(rows_to_be_flipped) # Flip the links of the graph
+flip(rows_to_be_flipped)
 new_reliability[k]+=calcReliability(exhaustive_links,
-0.9)/no_of_monte_carlo_simulation # Calculate new reliability of the graph
-flip(rows_to_be_flipped) # Restore to the original graph
-if(new_reliability[k]>1): # Clip the reliability to 1
+0.9)/no_of_monte_carlo_simulation 
+flip(rows_to_be_flipped) 
+if(new_reliability[k]>1): 
 new_reliability[k]=1
 break
 print(str(k)+"\t"+str(new_reliability[k]))
-# Print the new reliability
+
 calculated
 print("K\tChange in Reliability")
-for i in range(31): # Print the change in reliability
+for i in range(31): 
 compared to the original graph 23 index of the original calculated reliablity
 print(str(i)+"\t"+str(abs(new_reliability[i]-reliability[23])))
